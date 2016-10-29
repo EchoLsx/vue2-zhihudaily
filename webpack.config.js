@@ -8,14 +8,14 @@ module.exports = {
     publicPath: '/dist/',
     filename: 'build.js'
   },
+  resolveLoader: {
+    root: path.join(__dirname, 'node_modules'),
+  },
   module: {
-    rules: [
+    loaders: [
       {
         test: /\.vue$/,
-        loader: 'vue',
-        options: {
-          // vue-loader options go here
-        }
+        loader: 'vue'
       },
       {
         test: /\.js$/,
@@ -25,16 +25,11 @@ module.exports = {
       {
         test: /\.(png|jpg|gif|svg)$/,
         loader: 'file',
-        options: {
+        query: {
           name: '[name].[ext]?[hash]'
         }
       }
     ]
-  },
-  resolve: {
-    alias: {
-      'vue$': 'vue/dist/vue'
-    }
   },
   devServer: {
     historyApiFallback: true,
@@ -55,10 +50,15 @@ if (process.env.NODE_ENV === 'production') {
     new webpack.optimize.UglifyJsPlugin({
       compress: {
         warnings: false
+      },
+      output: {
+        comments: false
       }
     }),
     new webpack.LoaderOptionsPlugin({
-      minimize: true
+      vue: {
+        postcss: [require('postcss-cssnext')()]
+      }
     })
   ])
 }
